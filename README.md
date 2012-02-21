@@ -20,3 +20,17 @@ Not much.  It will connect to nonolith-connect and interact with the CEE through
 - A slick plotting interface (probably not pixel pulse slick, but flot pratical)
 - Log to mongo
 - Allow scripted events
+
+##How to run
+
+- Start nonolith-connect
+- run node expressserver.js
+- go to http://localhost:4000
+
+
+##What it might need
+If node farts on you, try:
+
+- npm install express
+- npm install socket.io
+- npm install faye-websocket
