@@ -1,0 +1,97 @@
+<html>
+	<head>
+		<LINK REL=StyleSheet HREF="/static/flot/style.css" TYPE="text/css" MEDIA=screen>
+	<style>
+	
+		.content
+		{
+			width: 800px;
+			margin: auto auto auto auto;
+		}
+		.textface
+		{
+			height:200px;
+			width:600px;
+			outline: none;
+			background: rgb(230,230,230);
+			border-color: silver;
+			
+		}
+		
+	</style>
+	</head>
+	<body>
+
+	<script src="/static/flot/jquery.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	
+	<div class="content">
+         <textarea id="toCEE" class="textface"></textarea><button id="sendCEE">Send</button><br>
+		<textarea id="fromCEE" class="textface"></textarea><br>
+		<button id="establishDevice">Disconnect/Reconnect</button><button id="clearOutput">Clear Output</button><button id="captureToggle">Capture</button><br>
+    </content>
+	</body>
+	<script>
+
+	$("#captureToggle").hide()
+	$("#establishDevice").hide()
+
+	var socket = io.connect('/');
+	//Socket Stuff
+ 	socket.on('new_data', 
+	function (data) {
+		data = data['data']
+		already = $("#fromCEE").val()
+		if (already != "") already = already+"\n"
+		$("#fromCEE").val(already+data)
+	});
+
+ 	socket.on('heartbeat', 
+	function (data) {
+		//console.log(data)
+		if (data['deviceReady'] == true) 
+		{
+			$("#captureToggle").show()
+		}
+		else
+		{
+			$("#captureToggle").hide()
+			
+		}
+	});
+
+
+	$("#sendCEE").click(function(){ 
+		out = $("#toCEE").val()
+		socket.emit('data_back', {data:out});
+		});
+		
+		
+	$("#establishDevice").click(function(){socket.emit('reconnect', {data:"reconnect"});})
+	
+	$("#clearOutput").click(function(){out = $("#fromCEE").val("")
+	})
+	
+	$("#captureToggle").click(function(){
+		if ($("#captureToggle").text() == "Capture")
+		{
+			$("#captureToggle").text("Stop")
+			socket.emit('tocee', {'_cmd':"startCapture"});
+		}
+		else
+		{
+			$("#captureToggle").text("Capture")
+			socket.emit('tocee', {'_cmd':"pauseCapture"});
+			
+		}
+		
+		
+		})
+	
+	
+	</script>	
+	
+	</body>
+
+
+</html>

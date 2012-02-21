@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<LINK REL=StyleSheet HREF="/static/flot/style.css" TYPE="text/css" MEDIA=screen>
+	<style>
+	
+		.content
+		{
+			width: 800px;
+			margin: auto auto auto auto;
+		}
+		.textface
+		{
+			height:300px;
+			width:600px;
+			outline: none;
+			background: rgb(230,230,230);
+			border-color: silver;
+			
+		}
+		
+	</style>
+	</head>
+	<body>
+
+	<script src="/static/flot/jquery.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	
+	<div class="content">
+         <textarea id="toKeith" class="textface"> </textarea><button id="sendKeith">Send</button><br>
+		<textarea id="fromKeith" class="textface"> </textarea><br>
+    </content>
+	</body>
+	<script>
+
+	
+	var socket = io.connect('/');
+	//Socket Stuff
+ 	socket.on('new_data', 
+	function (data) {
+		data = data['data']
+		already = $("#fromKeith").val()
+		$("#fromKeith").val(already+"\n"+data)
+	});
+
+
+	$("#sendKeith").click(function(){ 
+		out = $("#toKeith").val()
+		socket.emit('data_back', {data:out});
+		});
+	</script>	
+	
+	</body>
+
+
+</html>
